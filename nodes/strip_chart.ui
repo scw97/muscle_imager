@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MuscleViewer</class>
+ <widget class="QWidget" name="MuscleViewer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1205</width>
+    <height>991</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MuscleViewer</string>
+  </property>
+  <widget class="GraphicsView" name="freq">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>50</y>
+     <width>1121</width>
+     <height>91</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="b3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>370</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="iii1">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>550</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="iii24">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>670</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="b1">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>250</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="hg3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>850</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="b2">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>310</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="hg4">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>910</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="i2">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>490</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="hg2">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>790</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="iii3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>610</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="hg1">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>730</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="lmr">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>150</y>
+     <width>1121</width>
+     <height>91</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="GraphicsView" name="i1">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>430</y>
+     <width>1121</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>31</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>L-R</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>41</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>WBA</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>250</y>
+     <width>51</width>
+     <height>711</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>b1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>b2</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>b3</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>i1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>i2</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>iii1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>iii3</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>iii24</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>hg1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>hg2</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>hg3</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>hg4</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>layoutWidget</zorder>
+  <zorder>freq</zorder>
+  <zorder>b3</zorder>
+  <zorder>iii1</zorder>
+  <zorder>iii24</zorder>
+  <zorder>b1</zorder>
+  <zorder>hg3</zorder>
+  <zorder>b2</zorder>
+  <zorder>hg4</zorder>
+  <zorder>i2</zorder>
+  <zorder>hg2</zorder>
+  <zorder>iii3</zorder>
+  <zorder>hg1</zorder>
+  <zorder>lmr</zorder>
+  <zorder>i1</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
