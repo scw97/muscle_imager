@@ -24,8 +24,8 @@ path = os.path.dirname(os.path.abspath(__file__))
 uiFile = os.path.join(path, 'strip_chart.ui')
 WindowTemplate, TemplateBaseClass = pg.Qt.loadUiType(uiFile)
 
-from muscle_imager import muscle_model as mm
-
+#from muscle_imager import muscle_model as mm
+import muscle_model as mm
 
 default_rframe_data = {'a1': np.array([ 51.5848967 ,  -5.93928407]),
                        'a2': np.array([ -0.09151179,  88.42505672]),

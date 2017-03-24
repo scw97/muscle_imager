@@ -25,8 +25,8 @@ path = os.path.dirname(os.path.abspath(__file__))
 uiFile = os.path.join(path, 'live_viewer.ui')
 WindowTemplate, TemplateBaseClass = pg.Qt.loadUiType(uiFile)
 
-from muscle_imager import muscle_model as mm
-
+#from muscle_imager import muscle_model as mm
+import muscle_model as mm
 
 default_rframe_data = {'a1': np.array([ 51.5848967 ,  -5.93928407]),
                        'a2': np.array([ -0.09151179,  88.42505672]),
@@ -50,20 +50,12 @@ class ModelView(object):
         self.namespace = rospy.get_namespace()
         self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
         self.pubMV = rospy.Publisher(self.topicMV, Msg2DAffineFrame,queue_size = 1000)
-        #self.element_list = ['b2', 'b1', 'ttm', 'b3', 'pr', 'nm', 
-        #                    'i1', 'iii24', 'A', 'C', 'B', 'E', 'D',
-        #                     'G', 'F', 'I', 'H', 'K', 'i2', 'J', 'tpd', 
-        #                     'iii1', 'iii3', 'hg2', 'hg3', 'hg1', 'tpv', 
-        #                     'DVM1', 'hg4', 'DVM3', 'DVM2']
-        #self.element_list = ['b2', 'b1', 'ttm', 'b3', 'pr', 'nm', 
-        #                     'i1', 'i2','iii24',  'tpd', 'iii1', 'iii3', 'hg2',
-        #                     'hg3', 'hg1', 'tpv',]
         
-    def plot(self,basis,plotobject):
+    def plot(self,frame,plotobject):
         if self.curves:
             for pitem in self.curves:
                 plotobject.removeItem(pitem)
-        lines = self.model.coords_from_frame(basis)
+        lines = self.model.coords_from_frame(frame)
         self.curves = list()
         for element_name, line in lines.items():
             if element_name in self.element_list:
@@ -79,14 +71,14 @@ class ModelView(object):
                             p = toNumpyND(self.plot_frame['p']),
                             components = ';'.join(self.element_list))
 
-    def update_basis(self,basis):
-        lines = self.model.coords_from_frame(basis)
+    def update_frame(self,frame):
+        lines = self.model.coords_from_frame(frame)
         lines = [l for k,l in lines.items() if k in self.element_list]
         if self.curves:
             for curve,line in zip(self.curves,lines):#lines.values()):
                 curve.setData(line[0,:],line[1,:])
 
-    def basis_changed(self,roi):
+    def frame_changed(self,roi):
         pnts = roi.saveState()['points']
         p = np.array(pnts[1])
         a1 = np.array(pnts[0])-p
@@ -96,20 +88,20 @@ class ModelView(object):
         self.plot_frame['a1'] = a1
         self.plot_frame['a2'] = a2
         print self.plot_frame['A']
-        self.update_basis(self.plot_frame)
+        self.update_frame(self.plot_frame)
         self.publish_ros()
 
 class RefrenceFrameROI(pg.ROI):
     
-    def __init__(self, basis, closed=False, pos=None, **args):
+    def __init__(self, frame, closed=False, pos=None, **args):
         pos = [0,0]
         self.closed = closed
         self.segments = []
         pg.ROI.__init__(self, pos, **args)
         
-        self.addFreeHandle((basis['p'][0]+basis['a1'][0],basis['p'][1]+basis['a1'][1]))
-        self.addFreeHandle((basis['p'][0],basis['p'][1]))
-        self.addFreeHandle((basis['p'][0]+basis['a2'][0],basis['p'][1]+basis['a2'][1]))
+        self.addFreeHandle((frame['p'][0]+frame['a1'][0],frame['p'][1]+frame['a1'][1]))
+        self.addFreeHandle((frame['p'][0],frame['p'][1]))
+        self.addFreeHandle((frame['p'][0]+frame['a2'][0],frame['p'][1]+frame['a2'][1]))
 
         for i in range(0, len(self.handles)-1):
             self.addSegment(self.handles[i]['item'], self.handles[i+1]['item'])
@@ -190,22 +182,6 @@ class MainWindow(TemplateBaseClass):
                                             buff_size=2*sizeImage, 
                                             tcp_nodelay=True)
 
-        #self.timeSeriesPlt = pg.PlotItem()
-        #self.ui.timeSeriesPlt.setCentralItem(self.timeSeriesPlt)
-        #self.tserTrace = self.timeSeriesPlt.plot(np.ones(1000))
-        #self.tpointLine = pg.InfiniteLine(pos = 0,movable = True)
-        #self.tpointLine.sigPositionChanged.connect(self.tpointLineMoved)
-        #self.timeSeriesPlt.addItem(self.tpointLine)
-
-        #load frames button
-        #self.ui.loadFrames.clicked.connect(self.loadFrames)
-
-        #save data button
-        #self.ui.saveFit.clicked.connect(self.saveFit)
-        #self.ui.loadFit.clicked.connect(self.loadFit)
-
-        ##scroll bar
-        #self.ui.frameScrollBar.valueChanged.connect(self.frameScrollBar_valueChanged)
 
         # Contrast/color control
         self.hist = pg.HistogramLUTItem()
@@ -393,7 +369,7 @@ class MainWindow(TemplateBaseClass):
         thorax = mm.GeometricModel(muscle_dict,frame)
         self.thorax_view = ModelView(thorax)
         self.roi = RefrenceFrameROI(thorax.frame)
-        self.roi.sigRegionChanged.connect(self.thorax_view.basis_changed)
+        self.roi.sigRegionChanged.connect(self.thorax_view.frame_changed)
         #self.roi.sigRegionChanged.connect(self.affineWarp)
 
         self.plt.disableAutoRange('xy')

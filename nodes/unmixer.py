@@ -6,11 +6,18 @@ import rospkg
 
 from sensor_msgs.msg import Image
 from std_msgs.msg import Header, String
+#import sys
+#print sys.path
 
-from muscle_imager import muscle_model as mm
+import muscle_model as mm
+#from muscle_imager import muscle_model as mm
 from muscle_imager.msg import Msg2DAffineFrame
 from muscle_imager.msg import MsgArrayNumpyND
 from muscle_imager.msg import MsgExtractedSignal
+
+from muscle_imager.srv import SrvRefFrame
+from muscle_imager.srv import SrvRefFrameResponse
+
 
 from cv_bridge import CvBridge, CvBridgeError
 
@@ -20,6 +27,7 @@ import os
 import cv2
 
 sizeImage = 128+1024*1024 
+
 
 def toNumpyND(np_ndarray):
     msg = MsgArrayNumpyND()
@@ -86,6 +94,37 @@ class Unmixer(object):
         self.pubImage = rospy.Publisher(self.nodename+'/image_output', 
                                         Image,  queue_size=2)
 
+        self.RefFrameServer = rospy.Service('RefFrameServer',
+        									 SrvRefFrame,
+        									 self.serve_ref_frame,
+        									 buff_size = 2*16)
+
+        #publish on serving request for reference frame - this is so data can be
+        #logged in bagfile when running a script
+        self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
+        self.PubRefFrame = rospy.Publisher(self.topicLogRefFrame,
+        									 Msg2DAffineFrame, 
+        									 queue_size = 1000)
+
+    def serve_ref_frame(self,req):
+    	#publish for logging
+    	header = Header(stamp=rospy.Time.now())
+        self.PubRefFrame.publish(header = header,
+                            a1 = toNumpyND(self.user_frame['a1']),
+                            a2 = toNumpyND(self.user_frame['a2']),
+                            A = toNumpyND(self.user_frame['A']),
+                            A_inv = toNumpyND(self.user_frame['A_inv']),
+                            p = toNumpyND(self.user_frame['p']),
+                            components = ';'.join(self.muscles))
+
+    	return SrvRefFrameResponse(a1 = toNumpyND(self.user_frame['a1']),
+                    			   a2 = toNumpyND(self.user_frame['a2']),
+                    			   A = toNumpyND(self.user_frame['A']),
+                    			   A_inv = toNumpyND(self.user_frame['A_inv']),
+                    			   p = toNumpyND(self.user_frame['p']),
+                    			   components = ';'.join(self.muscles))
+
+
     def ca_image_callback(self,img):
         """unmix an incoming image img"""
         self.ca_image = self.cvbridge.imgmsg_to_cv2(img, 'passthrough').astype(float)
@@ -100,7 +139,7 @@ class Unmixer(object):
     def new_frame_callback(self,msg):
         """update the model when the reference frame changes... perform
         the affine warping"""
-        user_frame = mm.Frame(a1 = fromNumpyND(msg.a1),
+        self.user_frame = mm.Frame(a1 = fromNumpyND(msg.a1),
                               a2 = fromNumpyND(msg.a2),
                               A = fromNumpyND(msg.A),
                               p = fromNumpyND(msg.p),
@@ -108,7 +147,7 @@ class Unmixer(object):
 
         # A is the transform that will be used to transform the 
         # confocal frame into the user frame
-        A = user_frame.get_transform(self.confocal_frame)
+        A = self.user_frame.get_transform(self.confocal_frame)
         # Option to compose with a scaling, not used, but here for future flexiblity..
         # for instance if we want to work with smaller images to speed things up
         s = 1.0
