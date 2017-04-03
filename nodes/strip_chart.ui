@@ -182,7 +182,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>WBA</string>
+    <string>WBF</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">

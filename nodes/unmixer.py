@@ -84,7 +84,7 @@ class Unmixer(object):
         # A CvBridge is needed to parse the ros experiments
         self.cvbridge = CvBridge()
 
-        self.caImage  = rospy.Subscriber('/ca_camera_1/image_raw', 
+        self.caImage  = rospy.Subscriber('/ca_camera_right/image_raw', 
                                             Image,  
                                             self.ca_image_callback,   
                                             queue_size=None, 

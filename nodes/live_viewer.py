@@ -202,7 +202,7 @@ class MainWindow(TemplateBaseClass):
         self.img1 = None
         self.cvbridge = CvBridge()
         #self.pubImage       = rospy.Publisher(self.nodename+'/image_output', Image,  queue_size=2)
-        self.subImage = rospy.Subscriber('/ca_camera_1/image_raw', 
+        self.subImage = rospy.Subscriber('/ca_camera_right/image_raw', 
                                             Image,  
                                             self.image_callback,   
                                             queue_size=None, 

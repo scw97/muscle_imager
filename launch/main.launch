@@ -9,7 +9,7 @@
     <!-- Launch the cameras.                                        -->
     <!-- ========================================================== -->
 
-    <group ns="ca_camera_1">
+    <group ns="ca_camera_right">
       <node pkg="nodelet" 
             type="nodelet" 
             name="camera_nodelet_manager"    
