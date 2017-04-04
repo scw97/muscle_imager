@@ -78,6 +78,7 @@
   <!-- ========================================================== -->
 
   <node name="ledpanels" pkg="ledpanels" type="panel_node.py" required="true" />
+  <node name="paneldebug" pkg="ledpanels" type="debug_server.py" required="true" />
 
   <!-- ========================================================== -->
   <!-- Launch the phidgets daq node.                              -->
