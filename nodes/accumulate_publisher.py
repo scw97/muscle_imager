@@ -31,7 +31,7 @@ class ImageAccumulator:
             self.pubImage.publish(rosimgOutput)
         else:
             inimg = self.cvbridge.imgmsg_to_cv2(rosimg, 'passthrough').astype(float)
-            cv2.accumulateWeighted(inimg.astype(np.float), self.img1, 0.5)
+            cv2.accumulateWeighted(inimg.astype(np.float), self.img1, 0.25)
             outimg = self.img1.astype(np.uint8)
             rosimgOutput = self.cvbridge.cv2_to_imgmsg(outimg, 'passthrough')
             #rosimgOutput.encoding = 'bgr8'
