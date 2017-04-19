@@ -41,9 +41,9 @@ void loop() {
     digitalWrite(CAM1_LED_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
     digitalWrite(CAM2_LED_PIN, HIGH);
     delay(15);                      
-    digitalWrite(CAM2_LED_PIN, LOW);    // turn the LED off by making the voltage LOW
-    delayMicroseconds(100);
-    digitalWrite(CAM2_LED_PIN, HIGH);
+    //digitalWrite(CAM2_LED_PIN, LOW);    // turn the LED off by making the voltage LOW
+    //delayMicroseconds(100);
+    //digitalWrite(CAM2_LED_PIN, HIGH);
     delay(15);
     digitalWrite(CAM1_LED_PIN, LOW);
     digitalWrite(CAM2_LED_PIN, LOW);
