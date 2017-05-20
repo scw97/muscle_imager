@@ -84,7 +84,7 @@ class Unmixer(object):
         # A CvBridge is needed to parse the ros experiments
         self.cvbridge = CvBridge()
 
-        self.caImage  = rospy.Subscriber('/ca_camera_right/image_raw', 
+        self.caImage  = rospy.Subscriber(rospy.get_param('~image_topic'), 
                                             Image,  
                                             self.ca_image_callback,   
                                             queue_size=None, 
@@ -94,7 +94,7 @@ class Unmixer(object):
         self.pubImage = rospy.Publisher(self.nodename+'/image_output', 
                                         Image,  queue_size=2)
 
-        self.RefFrameServer = rospy.Service('RefFrameServer',
+        self.RefFrameServer = rospy.Service(self.nodename+'/RefFrameServer',
         									 SrvRefFrame,
         									 self.serve_ref_frame,
         									 buff_size = 2*16)

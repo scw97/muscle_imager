@@ -16,8 +16,8 @@ import os
 from cv_bridge import CvBridge, CvBridgeError
 
 sizeImage = 128+1024*1024 # Size of header + data.
-
-pg.mkQApp()
+qt_tick_freq = 5
+app = pg.mkQApp()
 
 ## Define main window class from template
 path = os.path.dirname(os.path.abspath(__file__))
@@ -63,18 +63,30 @@ class MainWindow(TemplateBaseClass):
         self.muscle_update_period_sec = 30.0/1000#30ms
         self.muscle_buffer_samples = int(self.buffer_duration_sec/self.muscle_update_period_sec)
         for muscle in ['b1','b2','b3','i1','i2','iii1','iii3','iii24','hg1','hg2','hg3','hg4']:
-            self.muscle_buffers[muscle] = [np.arange(self.muscle_buffer_samples,dtype = float),
-                                           np.ones(self.muscle_buffer_samples,dtype = float)]
             self.muscle_plots[muscle] = pg.PlotItem()
-            self.ui.__dict__[muscle].setCentralItem(self.muscle_plots[muscle])
-            self.muscle_curves[muscle] = self.muscle_plots[muscle].plot(self.muscle_buffers[muscle][0],
-                                                                        self.muscle_buffers[muscle][1])
-            self.muscle_subcribers[muscle] = rospy.Subscriber('/Unmixer/%s'%muscle,
+            for side in ['left','right']:
+                self.muscle_buffers[(side,muscle)] = [np.arange(self.muscle_buffer_samples,dtype = float),
+                                           np.ones(self.muscle_buffer_samples,dtype = float)]
+                self.ui.__dict__[muscle].setCentralItem(self.muscle_plots[muscle])
+                c = {'left':'w','right':'r'}[side]
+                self.muscle_curves[(side,muscle)] = self.muscle_plots[muscle].plot(self.muscle_buffers[(side,muscle)][0],
+                                                                        self.muscle_buffers[(side,muscle)][1],
+                                                                        pen = c)
+                if side == 'left':
+                    self.muscle_subcribers[(side,muscle)] = rospy.Subscriber('/unmixer_%s/%s'%(side,muscle),
                                             MsgExtractedSignal,
-                                            self.muscle_signal_callback,   
+                                            self.muscle_signal_callback_left,   
                                             queue_size=None, 
                                             buff_size=2*sizeImage, 
                                             tcp_nodelay=True)
+                elif side == 'right':
+                    self.muscle_subcribers[(side,muscle)] = rospy.Subscriber('/unmixer_%s/%s'%(side,muscle),
+                                            MsgExtractedSignal,
+                                            self.muscle_signal_callback_right,   
+                                            queue_size=None, 
+                                            buff_size=2*sizeImage, 
+                                            tcp_nodelay=True)
+
         #Signals coming in from the daq
         self.daq_buffers = dict()
         self.daq_plots = dict()
@@ -121,7 +133,7 @@ class MainWindow(TemplateBaseClass):
         #update the gui with a Qt timer
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.qt_tick)
-        self.timer.start(30)
+        self.timer.start(qt_tick_freq)
         self.show()
 
     def daq_signal_callback(self,msg):
@@ -141,21 +153,29 @@ class MainWindow(TemplateBaseClass):
             else:
                 self.kinefly_buffers['lmr'][1][-1] = np.nan
                 
-    def muscle_signal_callback(self,msg):
-        """recive a MsgExtractedSignal message, msg"""
+    def muscle_signal_callback_left(self,msg):
+        """recive a MsgExtractedSignal message from the left unmixer, msg"""
         if not(self.lock):
-            self.muscle_buffers[msg.muscle][0] = np.roll(self.muscle_buffers[msg.muscle][0],-1)
-            self.muscle_buffers[msg.muscle][1] = np.roll(self.muscle_buffers[msg.muscle][1],-1)
-            self.muscle_buffers[msg.muscle][0][-1] = msg.header.stamp.to_sec()
-            self.muscle_buffers[msg.muscle][1][-1] = msg.value
-        
+            self.muscle_buffers[('left',msg.muscle)][0] = np.roll(self.muscle_buffers[('left',msg.muscle)][0],-1)
+            self.muscle_buffers[('left',msg.muscle)][1] = np.roll(self.muscle_buffers[('left',msg.muscle)][1],-1)
+            self.muscle_buffers[('left',msg.muscle)][0][-1] = msg.header.stamp.to_sec()
+            self.muscle_buffers[('left',msg.muscle)][1][-1] = msg.value
+
+    def muscle_signal_callback_right(self,msg):
+        """recive a MsgExtractedSignal message from the right unmixer, msg"""
+        if not(self.lock):
+            self.muscle_buffers[('right',msg.muscle)][0] = np.roll(self.muscle_buffers[('right',msg.muscle)][0],-1)
+            self.muscle_buffers[('right',msg.muscle)][1] = np.roll(self.muscle_buffers[('right',msg.muscle)][1],-1)
+            self.muscle_buffers[('right',msg.muscle)][0][-1] = msg.header.stamp.to_sec()
+            self.muscle_buffers[('right',msg.muscle)][1][-1] = msg.value
+
     def qt_tick(self):
         self.lock = True
         """handle a qt timer tick"""
-        for muscle in self.muscle_curves.keys():
-            self.muscle_curves[muscle].setData(self.muscle_buffers[muscle][0]-\
-                                                self.muscle_buffers[muscle][0][0],
-                                               self.muscle_buffers[muscle][1])
+        for side,muscle in self.muscle_curves.keys():
+            self.muscle_curves[(side,muscle)].setData(self.muscle_buffers[(side,muscle)][0]-\
+                                                self.muscle_buffers[(side,muscle)][0][0],
+                                               self.muscle_buffers[(side,muscle)][1])
         self.daq_curves['freq'].setData((self.daq_buffers['freq'][0]-
                                         self.daq_buffers['freq'][0][0]),
                                         self.daq_buffers['freq'][1])
@@ -163,6 +183,7 @@ class MainWindow(TemplateBaseClass):
                                         self.kinefly_buffers['lmr'][0][0]),
                                         self.kinefly_buffers['lmr'][1])
         self.lock = False
+        app.processEvents()
 
 win = MainWindow()
 

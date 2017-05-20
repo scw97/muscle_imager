@@ -16,6 +16,9 @@ import numpy as np
 import os
 from cv_bridge import CvBridge, CvBridgeError
 
+
+
+
 sizeImage = 128+1024*1024 # Size of header + data.
 
 pg.mkQApp()
@@ -164,25 +167,6 @@ class MainWindow(TemplateBaseClass):
 
         #timeSeries
 
-        self.muscle_plots = dict()
-        self.muscle_curves = dict()
-        self.muscle_buffers = dict()
-        self.muscle_subcribers = dict()
-        for muscle in ['b1','b2','b3','i1','i2','iii1','iii3','iii4','hg1','hg2','hg3','hg4']:
-            self.muscle_buffers[muscle] = [np.arange(1000,dtype = float),
-                                           np.ones(1000,dtype = float)]
-            self.muscle_plots[muscle] = pg.PlotItem()
-            self.ui.__dict__[muscle].setCentralItem(self.muscle_plots[muscle])
-            self.muscle_curves[muscle] = self.muscle_plots[muscle].plot(self.muscle_buffers[muscle][0],
-                                                                        self.muscle_buffers[muscle][1])
-            self.muscle_subcribers[muscle] = rospy.Subscriber('/Unmixer/%s'%muscle,
-                                            MsgExtractedSignal,
-                                            self.muscle_signal_callback,   
-                                            queue_size=None, 
-                                            buff_size=2*sizeImage, 
-                                            tcp_nodelay=True)
-
-
         # Contrast/color control
         self.hist = pg.HistogramLUTItem()
         self.hist.setImageItem(self.frameView)
@@ -202,7 +186,7 @@ class MainWindow(TemplateBaseClass):
         self.img1 = None
         self.cvbridge = CvBridge()
         #self.pubImage       = rospy.Publisher(self.nodename+'/image_output', Image,  queue_size=2)
-        self.subImage = rospy.Subscriber('/ca_camera_right/image_raw', 
+        self.subImage = rospy.Subscriber(rospy.get_param('~image_topic'), 
                                             Image,  
                                             self.image_callback,   
                                             queue_size=None, 
@@ -259,10 +243,10 @@ class MainWindow(TemplateBaseClass):
             self.frameView.setImage(img)
         else:
             pass
-        for muscle in self.muscle_curves.keys():
-            self.muscle_curves[muscle].setData(self.muscle_buffers[muscle][0]-\
-                                                self.muscle_buffers[muscle][0][0],
-                                               self.muscle_buffers[muscle][1])
+        #for muscle in self.muscle_curves.keys():
+        #    self.muscle_curves[muscle].setData(self.muscle_buffers[muscle][0]-\
+        #                                       self.muscle_buffers[muscle][0][0],
+        #                                       self.muscle_buffers[muscle][1])
         #try:
         #self.thorax_view.publish_ros()
 
