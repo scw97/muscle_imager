@@ -21,6 +21,6 @@ config = c2.update_configuration(ca_cam_params_3)
 
 
 #config = c3.update_configuration({'trigger_mode':'mode1','enable_trigger':True,'trigger_polarity':1})
-config = c3.update_configuration({'trigger_mode':'mode14','enable_trigger':True,'shutter_speed':0.020})
+#config = c3.update_configuration({'trigger_mode':'mode14','enable_trigger':True,'shutter_speed':0.020})
 #config = c3.update_configuration({'enable_trigger':False,})
 #config = c3.update_configuration({'trigger_mode':'mode1'})
