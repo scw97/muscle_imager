@@ -241,6 +241,7 @@ class MainWindow(TemplateBaseClass):
             img = self.cvbridge.imgmsg_to_cv2(self.rosimg, 'passthrough').astype(float)
             img = self.gammaf(img)
             self.frameView.setImage(img)
+            print 'tick'
         else:
             pass
         #for muscle in self.muscle_curves.keys():
