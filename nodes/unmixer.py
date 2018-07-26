@@ -131,10 +131,11 @@ class Unmixer(object):
         from scipy.optimize import nnls
         im_vect = self.ca_image.astype(np.float32).ravel()
         #fits = np.empty((np.shape(self.model_matrix)[0],np.shape(im_vect)[0]))
-        fits = np.dot(self.model_inv,im_vect.T)
-        header = Header(stamp=img.header.stamp)
-        for i,m in enumerate(self.muscles):
-            self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
+        if hasattr(self, 'model_inv'):
+            fits = np.dot(self.model_inv,im_vect.T)
+            header = Header(stamp=img.header.stamp)
+            for i,m in enumerate(self.muscles):
+                self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
 
     def new_frame_callback(self,msg):
         """update the model when the reference frame changes... perform
