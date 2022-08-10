@@ -18,8 +18,6 @@ from muscle_imager.msg import MsgExtractedSignal
 from muscle_imager.srv import SrvRefFrame
 from muscle_imager.srv import SrvRefFrameResponse
 
-from scipy.optimize import nnls
-
 
 from cv_bridge import CvBridge, CvBridgeError
 
@@ -27,9 +25,6 @@ import numpy as np
 import h5py
 import os
 import cv2
-import time
-
-from scipy.linalg.blas import sgemm, sgemv
 
 sizeImage = 128+1024*1024 
 
@@ -94,8 +89,7 @@ class Unmixer(object):
                                             self.ca_image_callback,   
                                             queue_size=None, 
                                             buff_size=2*sizeImage, 
-                                            #tcp_nodelay=True)
-                                            tcp_nodelay=False)
+                                            tcp_nodelay=True)
         
         self.pubImage = rospy.Publisher(self.nodename+'/image_output', 
                                         Image,  queue_size=2)
@@ -131,35 +125,16 @@ class Unmixer(object):
                     			   components = ';'.join(self.muscles))
 
 
-#modified by francesca on 0622 to avoid errors when publishers get delayed
     def ca_image_callback(self,img):
         """unmix an incoming image img"""
         self.ca_image = self.cvbridge.imgmsg_to_cv2(img, 'passthrough').astype(float)
-        #from scipy.optimize import nnls
+        from scipy.optimize import nnls
         im_vect = self.ca_image.astype(np.float32).ravel()
         #fits = np.empty((np.shape(self.model_matrix)[0],np.shape(im_vect)[0]))
-        if hasattr(self, 'model_inv'):
-            #fits = np.dot(self.model_inv,im_vect.T)
-            t_fit = time.time()
-            fits = np.linalg.multi_dot([self.model_inv,im_vect.T])
-            #fits = np.matmul(self.model_inv,im_vect.T)
-            #fits = self.model_inv@im_vect.T
-            #fits = sgemv(1.0,self.model_inv,im_vect.T)
-            #t_fit = time.time()-t_fit
-            #if t_fit>0.001:
-            #rospy.logwarn(t_fit)
-
-            header = Header(stamp=img.header.stamp)
-
-            for i,m in enumerate(self.muscles):
-            	self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
-
-            #for i,m in enumerate(self.muscles):
-            #        try:
-            #            self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
-            #        except:
-            #            rospy.logwarn('muscle activity publishers crapping out')
-
+        fits = np.dot(self.model_inv,im_vect.T)
+        header = Header(stamp=img.header.stamp)
+        for i,m in enumerate(self.muscles):
+            self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
 
     def new_frame_callback(self,msg):
         """update the model when the reference frame changes... perform
