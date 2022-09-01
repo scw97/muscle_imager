@@ -242,7 +242,6 @@ class MainWindow(TemplateBaseClass):
             img = self.gammaf(img)
             img = np.fliplr(np.transpose(img)) # change made by Johan
             self.frameView.setImage(img)
-            print 'tick'
         else:
             pass
         #for muscle in self.muscle_curves.keys():

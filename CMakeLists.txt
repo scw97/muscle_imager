@@ -50,6 +50,7 @@ add_message_files(
    MsgArrayNumpyND.msg
    Msg2DAffineFrame.msg
    MsgExtractedSignal.msg
+   MsgArrayNumpyUint8.msg
 #   Message2.msg
 )
 
