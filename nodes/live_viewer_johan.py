@@ -698,7 +698,7 @@ class FlyamiViewer(QtWidgets.QMainWindow, Ui_MainWindow, QObject):
 
 	def ca_image_callback(self,img):
 		self.lock = True
-		if self.frame_counter%5==0:
+		if self.frame_counter%10==0:
 			"""unmix an incoming image img"""
 			img_cv = self.cvbridge.imgmsg_to_cv2(img, 'passthrough')
 			img_t = cv2.flip(cv2.flip(cv2.transpose(img_cv),flipCode=0),flipCode=1)

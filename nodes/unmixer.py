@@ -55,11 +55,12 @@ class Unmixer(object):
         self.nodename = rospy.get_name().rstrip('/')
         # The ModelViewFrame publishes the affine reference frame to use 
         # to transform the muscle model
-        #self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
-        if 'left' in self.nodename:
-            self.topicMV = '/live_viewer_left/' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
-        elif 'right' in self.nodename:
-            self.topicMV = '/live_viewer_right/' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        #rospy.logwarn(self.topicMV)
+#        if 'left' in self.nodename:
+#            self.topicMV = '/unmixer_left' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
+#        elif 'right' in self.nodename:
+#            self.topicMV = '/unmixer_right' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         rospy.Subscriber(self.topicMV, Msg2DAffineFrame, self.new_frame_callback)
         rp = rospkg.RosPack()
         self.package_path = rp.get_path('muscle_imager')
@@ -111,11 +112,11 @@ class Unmixer(object):
 
         #publish on serving request for reference frame - this is so data can be
         #logged in bagfile when running a script
-        #self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
-        if 'left' in self.nodename:
-            self.topicLogRefFrame = '/live_viewer_left/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
-        elif 'right' in self.nodename:
-            self.topicLogRefFrame = '/live_viewer_right/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
+        self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
+#        if 'left' in self.nodename:
+#            self.topicLogRefFrame = '/live_viewer_left/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
+#        elif 'right' in self.nodename:
+#            self.topicLogRefFrame = '/live_viewer_right/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
         self.PubRefFrame = rospy.Publisher(self.topicLogRefFrame,
         									 Msg2DAffineFrame, 
         									 queue_size = 1000)
