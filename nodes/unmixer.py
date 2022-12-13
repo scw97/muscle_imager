@@ -112,7 +112,10 @@ class Unmixer(object):
 
         #publish on serving request for reference frame - this is so data can be
         #logged in bagfile when running a script
-        self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
+        # START testing by SCW,. 12/12/22 
+        self.topicLogRefFrame = self.nodename + '%s/LogRefFrame' % self.namespace.rstrip('/')
+        # self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
+        # END testing by SCW,. 12/12/22 
 #        if 'left' in self.nodename:
 #            self.topicLogRefFrame = '/live_viewer_left/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
 #        elif 'right' in self.nodename:
