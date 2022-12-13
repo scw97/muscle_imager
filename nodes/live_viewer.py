@@ -241,8 +241,8 @@ class MainWindow(TemplateBaseClass):
         if not(self.rosimg is None):
             img = self.cvbridge.imgmsg_to_cv2(self.rosimg, 'passthrough').astype(float)
             img = self.gammaf(img)
-            img = np.transpose(img) # change made by Sam (part of Johan change)
-            # img = np.fliplr(np.transpose(img)) # change made by Johan
+            # img = np.transpose(img) # change made by Sam (part of Johan change)
+            img = np.fliplr(np.transpose(img)) # change made by Johan
             self.frameView.setImage(img)
         else:
             pass
