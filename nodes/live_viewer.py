@@ -98,7 +98,7 @@ class ModelView(object):
         self.update_frame(self.plot_frame)
         self.publish_ros()
         
-        rospy.logwarn(p)
+        # rospy.logwarn(p)
 
 class RefrenceFrameROI(pg.ROI):
     
