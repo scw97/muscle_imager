@@ -56,6 +56,7 @@ class Unmixer(object):
         # The ModelViewFrame publishes the affine reference frame to use 
         # to transform the muscle model
         self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        rospy.logwarn('SUBSCRIBER NAME IS : ' + self.topicMV)
         rospy.Subscriber(self.topicMV, Msg2DAffineFrame, self.new_frame_callback)
         
         rp = rospkg.RosPack()

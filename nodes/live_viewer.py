@@ -54,6 +54,7 @@ class ModelView(object):
         self.nodename = rospy.get_name().rstrip('/')
         rospy.logwarn(self.namespace)
         self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        rospy.logwarn('PUBLISHER NAME IS : ' + self.topicMV)
         self.pubMV = rospy.Publisher(self.topicMV, Msg2DAffineFrame,queue_size = 1000)
         
     def plot(self,frame,plotobject):
@@ -92,9 +93,11 @@ class ModelView(object):
         self.plot_frame['p'] = p
         self.plot_frame['a1'] = a1
         self.plot_frame['a2'] = a2
-        print self.plot_frame['A']
+        self.plot_frame['A']
         self.update_frame(self.plot_frame)
         self.publish_ros()
+        
+        rospy.logwarn(p)
 
 class RefrenceFrameROI(pg.ROI):
     
