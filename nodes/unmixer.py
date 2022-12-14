@@ -201,7 +201,7 @@ class Unmixer(object):
         self.model_mtrx = np.vstack(tmp)
 
 
-        self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         self.muscle_publishers = dict()
         for muscle in self.muscles:
             self.muscle_publishers[muscle] = rospy.Publisher(self.nodename+'/' + muscle, 
