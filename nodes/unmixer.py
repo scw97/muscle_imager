@@ -123,7 +123,6 @@ class Unmixer(object):
     def serve_ref_frame(self,req):
     	#publish for logging
     	header = Header(stamp=rospy.Time.now())
-    	rospy.logwarn(self.user_frame['p'])
         self.PubRefFrame.publish(header = header,
                             a1 = toNumpyND(self.user_frame['a1']),
                             a2 = toNumpyND(self.user_frame['a2']),
