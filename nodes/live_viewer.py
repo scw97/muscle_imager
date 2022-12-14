@@ -51,8 +51,9 @@ class ModelView(object):
         self.element_list = []
 
         self.namespace = rospy.get_namespace()
+        self.nodename = rospy.get_name().rstrip('/')
         rospy.logwarn(self.namespace)
-        self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         self.pubMV = rospy.Publisher(self.topicMV, Msg2DAffineFrame,queue_size = 1000)
         
     def plot(self,frame,plotobject):

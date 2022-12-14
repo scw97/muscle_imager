@@ -55,13 +55,9 @@ class Unmixer(object):
         self.nodename = rospy.get_name().rstrip('/')
         # The ModelViewFrame publishes the affine reference frame to use 
         # to transform the muscle model
-        self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
-        #rospy.logwarn(self.topicMV)
-#        if 'left' in self.nodename:
-#            self.topicMV = '/unmixer_left' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
-#        elif 'right' in self.nodename:
-#            self.topicMV = '/unmixer_right' + '%s/ModelViewFrame' % self.namespace.rstrip('/')
+        self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         rospy.Subscriber(self.topicMV, Msg2DAffineFrame, self.new_frame_callback)
+        
         rp = rospkg.RosPack()
         self.package_path = rp.get_path('muscle_imager')
         self.model_path = os.path.join(self.package_path,'models')
@@ -127,6 +123,7 @@ class Unmixer(object):
     def serve_ref_frame(self,req):
     	#publish for logging
     	header = Header(stamp=rospy.Time.now())
+    	rospy.logwarn(self.user_frame['p'])
         self.PubRefFrame.publish(header = header,
                             a1 = toNumpyND(self.user_frame['a1']),
                             a2 = toNumpyND(self.user_frame['a2']),
