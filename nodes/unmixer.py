@@ -57,7 +57,6 @@ class Unmixer(object):
         # to transform the muscle model
         self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         # self.topicMV = '%s/ModelViewFrame' % self.namespace.rstrip('/')
-        rospy.logwarn('SUBSCRIBER NAME IS : ' + self.topicMV)
         rospy.Subscriber(self.topicMV, Msg2DAffineFrame, self.new_frame_callback)
         
         rp = rospkg.RosPack()
@@ -110,14 +109,7 @@ class Unmixer(object):
 
         #publish on serving request for reference frame - this is so data can be
         #logged in bagfile when running a script
-        # START testing by SCW,. 12/12/22 
         self.topicLogRefFrame = self.nodename + '%s/LogRefFrame' % self.namespace.rstrip('/')
-        # self.topicLogRefFrame = '%s/LogRefFrame' % self.namespace.rstrip('/')
-        # END testing by SCW,. 12/12/22 
-#        if 'left' in self.nodename:
-#            self.topicLogRefFrame = '/live_viewer_left/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
-#        elif 'right' in self.nodename:
-#            self.topicLogRefFrame = '/live_viewer_right/' + '%s/LogRefFrame' % self.namespace.rstrip('/')
         self.PubRefFrame = rospy.Publisher(self.topicLogRefFrame,
         									 Msg2DAffineFrame, 
         									 queue_size = 1000)
@@ -149,26 +141,15 @@ class Unmixer(object):
         im_vect = self.ca_image.astype(np.float32).ravel()
         #fits = np.empty((np.shape(self.model_matrix)[0],np.shape(im_vect)[0]))
         if hasattr(self, 'model_inv'):
-            #fits = np.dot(self.model_inv,im_vect.T)
+            # faster solution for real-time unmixing:
             t_fit = time.time()
             fits = np.linalg.multi_dot([self.model_inv,im_vect.T])
-            #fits = np.matmul(self.model_inv,im_vect.T)
-            #fits = self.model_inv@im_vect.T
-            #fits = sgemv(1.0,self.model_inv,im_vect.T)
-            #t_fit = time.time()-t_fit
-            #if t_fit>0.001:
-            #rospy.logwarn(t_fit)
-
+           
             header = Header(stamp=img.header.stamp)
 
             for i,m in enumerate(self.muscles):
+                # NB: this will sometimes throw errors, but shouldn't crash the data collection. Should work on
             	self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
-
-            #for i,m in enumerate(self.muscles):
-            #        try:
-            #            self.muscle_publishers[m].publish(header = header,value = float(fits[i]),muscle = m)
-            #        except:
-            #            rospy.logwarn('muscle activity publishers crapping out')
 
 
     def new_frame_callback(self,msg):

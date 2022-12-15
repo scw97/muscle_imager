@@ -53,9 +53,9 @@ class ModelView(object):
         self.namespace = rospy.get_namespace()
         self.nodename = rospy.get_name().rstrip('/')
         rospy.logwarn(self.namespace)
+        # NB: should probably be using namespace
         # self.topicMV = self.nodename + '%s/ModelViewFrame' % self.namespace.rstrip('/')
         self.topicMV = '/unmixer_%s'%((self.nodename).split('_')[-1]) + '%s/ModelViewFrame' % self.namespace.rstrip('/')
-        rospy.logwarn('PUBLISHER NAME IS : ' + self.topicMV)
         self.pubMV = rospy.Publisher(self.topicMV, Msg2DAffineFrame,queue_size = 1000)
         
     def plot(self,frame,plotobject):
